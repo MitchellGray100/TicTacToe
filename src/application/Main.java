@@ -29,6 +29,7 @@ public class Main extends Application {
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 3; j++) {
 					boardPaneHolder[i][j].piece.setText("");
+					boardPaneHolder[i][j].piece.setFill(Color.BLACK);
 					boardPaneHolder[i][j].clicked = false;
 				}
 			}
@@ -36,14 +37,14 @@ public class Main extends Application {
 			turn = 0;
 
 		});
-		restart.setPrefSize(300, 100);
+		restart.setPrefSize(303, 100);
 		restart.setAlignment(Pos.CENTER);
 		restart.setTranslateY(300);
 		root.setPrefSize(300, 400);
 
 		GridPane boardGrid = new GridPane();
-		boardGrid.setGridLinesVisible(true);
 		BoardPane temp = new BoardPane();
+
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				temp = new BoardPane();
@@ -100,6 +101,9 @@ public class Main extends Application {
 				&& boardPaneHolder[x2][y2].clicked == true
 				&& boardPaneHolder[x2][y2].piece.getText() == boardPaneHolder[x3][y3].piece.getText()
 				&& boardPaneHolder[x3][y3].clicked == true) {
+			boardPaneHolder[x1][y1].piece.setFill(Color.RED);
+			boardPaneHolder[x2][y2].piece.setFill(Color.RED);
+			boardPaneHolder[x3][y3].piece.setFill(Color.RED);
 			return true;
 		}
 		return false;
@@ -111,6 +115,7 @@ public class Main extends Application {
 				|| checkBoardHelper(0, 0, 1, 0, 2, 0) || checkBoardHelper(0, 1, 1, 1, 2, 1)
 				|| checkBoardHelper(0, 2, 1, 2, 2, 2) || checkBoardHelper(2, 0, 1, 1, 0, 2)
 				|| checkBoardHelper(1, 0, 1, 1, 1, 2) || checkBoardHelper(2, 0, 2, 1, 2, 2)) {
+
 			return true;
 		}
 		return false;
