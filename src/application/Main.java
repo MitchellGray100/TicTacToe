@@ -1,7 +1,7 @@
 package application;
 
 import javafx.application.Application;
-import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -9,6 +9,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -22,7 +23,7 @@ public class Main extends Application {
 	private BoardPane[][] boardPaneHolder = new BoardPane[3][3];
 	private Button restart = new Button();
 
-	private Parent createContent() {
+	private Parent createContent(Stage primaryStage) {
 		restart.setText("RESTART");
 		restart.setFont(new Font(54));
 		restart.setOnMouseClicked(event -> {
@@ -38,33 +39,52 @@ public class Main extends Application {
 
 		});
 		restart.setPrefSize(303, 100);
-		restart.setAlignment(Pos.CENTER);
+		restart.setFont(new Font(50));
+		// restart.setAlignment(Pos.CENTER);
 		restart.setTranslateY(300);
-		root.setPrefSize(300, 400);
-
+//		root.setPrefSize(300, 500);
+		VBox box = new VBox();
+		box.setPadding(new Insets(0, 0, 0, 0));
 		GridPane boardGrid = new GridPane();
-		BoardPane temp = new BoardPane();
+		box.setMinSize(333, 400);
+		boardGrid.setHgap(0);
+		boardGrid.setVgap(0);
+		VBox box2 = new VBox();
+		box2.getChildren().addAll(boardGrid, restart);
+		restart.translateXProperty().bind(box2.layoutXProperty());
+		restart.translateYProperty().bind(box2.layoutYProperty());
+		restart.prefWidthProperty().bind(box2.widthProperty());
+		restart.prefHeightProperty().bind(box2.heightProperty().divide(3));
+
+		box.getChildren().addAll(box2);
+
+		box2.prefWidthProperty().bind(primaryStage.widthProperty());
+		box2.prefHeightProperty().bind(primaryStage.heightProperty());
+		BoardPane temp = new BoardPane(primaryStage);
 
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
-				temp = new BoardPane();
+				temp = new BoardPane(primaryStage);
 				boardGrid.add(temp, i, j);
 				boardPaneHolder[i][j] = temp;
 			}
 		}
 
-		root.getChildren().addAll(boardGrid, restart);
+		root.getChildren().addAll(box);
 		return root;
 
 	}
 
 	private class BoardPane extends StackPane {
 
-		Rectangle border = new Rectangle(100, 100);
+		Rectangle border = new Rectangle();
 		Text piece = new Text();
 		boolean clicked = false;
 
-		public BoardPane() {
+		public BoardPane(Stage primaryStage) {
+			border.widthProperty().bind(primaryStage.widthProperty().multiply(.3333333));
+
+			border.heightProperty().bind(primaryStage.heightProperty().multiply(.222222));
 			piece.setText("");
 			piece.setX(this.getLayoutX());
 			piece.setY(this.getLayoutY());
@@ -124,7 +144,10 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			primaryStage.setScene(new Scene(createContent()));
+			primaryStage.setScene(new Scene(createContent(primaryStage)));
+			primaryStage.setMinHeight(500);
+			primaryStage.setMinWidth(400);
+
 			primaryStage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
